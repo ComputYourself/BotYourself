@@ -15,8 +15,12 @@ from worldlist import worldlist
 load_dotenv()
 token = os.getenv('DISCORD_TOKEN')
 
-client = discord.Client()
+#client = discord.Client()
 channels = ["botchannel"]
+
+intents = discord.Intents.all()
+client = discord.Client(intents=intents)
+#bot = commands.Bot(command_prefix='!')
 
 print("\n-----------------------------")
 print("---Ravi de vous revoir Sky---")
@@ -30,7 +34,7 @@ print("-----------------------------\n")
 @client.event
 async def on_ready():
 	print("""################################################""")
-	print(f'## {client.user} has connected to Discord! ##')
+	#print(f'etse {client.user} has connected to Discord!')
 	print("""################################################""")
 	print("\n-----------------------------")
 	print("------Et c'est parti !!------")
@@ -46,9 +50,11 @@ async def on_ready():
 
 @client.event
 async def on_raw_reaction_add(payload):
-	message_id = payload.message_id
-	if message_id == :
-		server = client.get_guild() 
+	message = payload.message_id
+	if message == 899267914190979105: #692005208984649788:
+		#guild_id = payload.guild_id
+		server = client.get_guild(259654315193532416)
+		print(server)
 		role = None
 
         # on crée les associations emoji/role a l'aide de leur code point
@@ -85,19 +91,30 @@ async def on_raw_reaction_add(payload):
 			role = discord.utils.get(server.roles, name='Minecraft')
 		elif payload.emoji.name == 'factorio':
 			role = discord.utils.get(server.roles, name='Factorio')
-
+		elif payload.emoji.name == 'amongus':
+			role = discord.utils.get(server.roles, name='AmongUs')
+		elif payload.emoji.name == 'genshinimpact':
+			 role = discord.utils.get(server.roles, name='Genshin Impact')
 
 		if role is not None:  # si le role choisi ne fait pas parti des ci-dessus
-			member = discord.utils.find(lambda m: m.id == payload.user_id, server.members)
-			await member.add_roles(role)
+			member = server.get_member(payload.user_id)
+			print(member)
+			if member is not None:
+				await member.add_roles(role)
+				print("done")
+			else:
+				print("Member Not Found")
 		print("done")
 
 
 @client.event
 async def on_raw_reaction_remove(payload):
-	message_id = payload.message_id
-	if message_id == :
-		server = client.get_guild()
+
+	message = payload.message_id
+	if message == 899267914190979105: #692005208984649788:
+		#guild_id = payload.guild_id
+		server = client.get_guild(259654315193532416)
+		print(server)
 		role = None
 
 		if payload.emoji.name == '💻':
@@ -130,21 +147,33 @@ async def on_raw_reaction_remove(payload):
 			role = discord.utils.get(server.roles, name='Minecraft')
 		elif payload.emoji.name == 'factorio':
 			role = discord.utils.get(server.roles, name='Factorio')
+		elif payload.emoji.name == 'amongus':
+			role = discord.utils.get(server.roles, name='AmongUs')
+		elif payload.emoji.name == 'genshinimpact':
+                         role = discord.utils.get(server.roles, name='Genshin Impact')
 
 		if role is not None:  # si le role est choisi fait parti des 5 ci-dessus
-			member = discord.utils.find(lambda m: m.id == payload.user_id, server.members)
-			await member.remove_roles(role)
-		print("done")
+			member = server.get_member(payload.user_id)
+			print(member)
+
+			if member is not None:
+				await member.remove_roles(role)
+				print("done")
+			else:
+				print("Member Not Found")
+			print("done")
 
 
 @client.event
 async def on_member_join(member):
 	for channel in member.guild.channels:
-		if str(channel) == "": # We check to make sure we are sending the message in the general channel
+		if str(channel) == "canap": # We check to make sure we are sending the message in the general channel
 			await channel.send(f"""Bienvenue {member.mention} dans l'antre de comput!""")
 			role = discord.utils.get(member.guild.roles, name = 'Non Membre')
 			await member.add_roles(role)
 			print(f"""Event : on_member_join \n 	Bienvenue {member.name} dans l'antre de comput!""")
+
+
 
 #====================================================================================#
 
@@ -219,13 +248,13 @@ async def on_message(message):
 	#star wars
 		if any(generalkenobi in message.content for generalkenobi in worldlist().liste_generalkenobi) and message.author != message.guild.me :
 			time.sleep(2)
-			await message.channel.send(file=discord.File('./picture_movie/generalkenobi.jpg'))
+			await message.channel.send(file=discord.File('./generalkenobi.jpg'))
 			print('Event : on_message \n 	star wars')
 
 
 		if any(obiwan in message.content for obiwan in worldlist().liste_obiwan) and message.author != message.guild.me:
 			time.sleep(2)
-			await message.channel.send(file=discord.File('./picture_movie/hellothere2.jpg'))
+			await message.channel.send(file=discord.File('./hellothere2.jpg'))
 			print('Event : on_message \n 	star wars')
 
 #====================================================================================#
